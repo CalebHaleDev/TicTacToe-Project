@@ -11,6 +11,7 @@ void checkWinRow(int checkRow, char board[3][3]);
 void checkWinColumn(int checkColumn, char board[3][3]);
 void checkWinDiagonals(char board[3][3]);
 void printBoard();
+void printLargeBoard();
 void printScreen();
 void checkWins(char board[3][3]);
 void changeTurn();
@@ -18,6 +19,7 @@ static char board[3][3] = {{' ',' ',' '},{' ',' ',' '},{' ',' ',' '}};
 //static char largeBoard[9][3][3] = {{{' ',' ',' '},{' ',' ',' '},{' ',' ',' '}},{{' ',' ',' '},{' ',' ',' '},{' ',' ',' '}},{{' ',' ',' '},{' ',' ',' '},{' ',' ',' '}},{{' ',' ',' '},{' ',' ',' '},{' ',' ',' '}},{{' ',' ',' '},{' ',' ',' '},{' ',' ',' '}},{{' ',' ',' '},{' ',' ',' '},{' ',' ',' '}},{{' ',' ',' '},{' ',' ',' '},{' ',' ',' '}},{{' ',' ',' '},{' ',' ',' '},{' ',' ',' '}},{{' ',' ',' '},{' ',' ',' '},{' ',' ',' '}}};
 char winner = ' ';
 char turn = 'X';
+int gamemode;
 int selection;
 char redo;
 
@@ -25,8 +27,8 @@ char redo;
 
 int main() {
     cout << "type 2 for a standard game and 3 for 3d tic tac toe: ";
-    cin >> selection;
-    if (selection == 2){
+    cin >> gamemode;
+    if (gamemode == 2){
         while(winner==' '){
             cout << endl;
             printScreen();
@@ -40,16 +42,18 @@ int main() {
         changeTurn();
         checkWins(board);
     }
-    }else if (selection == 3){
+    }else if (gamemode == 3){
         //3d version
     }else{
         cout << "please select a valid game mode"<< endl;
         main();
+        return 0;
     }
 
     cout << "would you like to play again? (y/n)";
     cin >> redo;
     if (redo == 'y'){
+        turn = 'X';
         main();
     } 
     return 0;
@@ -62,7 +66,10 @@ void printScreen(){
     else
         cout << "It is " << turn << "'s turn" << endl;
     
-    printBoard();
+    if(gamemode==2)
+        printBoard();
+    else
+        printLargeBoard();
 }
 
 void printBoard(){
@@ -71,6 +78,11 @@ void printBoard(){
     cout << board[0][1] << " | " << board[1][1] << " | " << board[2][1] << endl;
     cout << board[0][2] << " | " << board[1][2] << " | " << board[2][2] << endl;
     cout << endl;
+    return;
+}
+
+void printLargeBoard(){
+//code here
     return;
 }
 
