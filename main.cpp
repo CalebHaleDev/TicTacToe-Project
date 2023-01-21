@@ -72,7 +72,8 @@ int main() {
     }else if (gamemode == 3){       //3d game
         //3d version
         cout << "select a board to begin in, using 1-9";
-        cin >> activeBoard -1;
+        cin >> activeBoard;
+        activeBoard--;  //user-friendly 1-9 to index range 0-8
 
         while(turnsPassed<81){
             cout << endl;
@@ -135,7 +136,7 @@ void printScreen(){     //prints display each turn
         printBoard(board);
     else{
         printLargeBoard();
-        cout << endl << "Active board: " << activeBoard+1 << endl << endl;
+        cout << endl << endl << "Active board: " << activeBoard+1 << endl;
         printBoard(largeBoard[activeBoard]);
     }   
 }
@@ -156,7 +157,8 @@ void printLargeBoard(){     //prints the large board
             cout << "------------------------------------" << endl;
             cout << "           |           |           " << endl;
         }
-        cout << " "; printRow(i/3, i%3); cout << " | "; printRow(i/3+1, i%3); cout << " | "; printRow(i/3+2, i%3); cout << endl;
+        cout << " "; printRow(3*(i/3), i%3); cout << " | "; printRow(3*(i/3)+1, i%3); cout << " | "; printRow(3*(i/3)+2, i%3); cout << endl;
+        //cout << "printed from boards: " << 3*(i/3) << 3*(i/3)+1 << 3*(i/3)+2 << " and relative row " << i%3;  //for troubleshooting
     }
     return;
 }
