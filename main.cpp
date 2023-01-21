@@ -7,32 +7,51 @@ using std::endl;
 using std::string;
 
 //function signatures, a list of functions which exist that makes placeholders for later defining
-void checkWinRow(int checkRow);
-void checkWinColumn(int checkColumn);
-void checkWinDiagonals();
+void checkWinRow(int checkRow, char board[3][3]);
+void checkWinColumn(int checkColumn, char board[3][3]);
+void checkWinDiagonals(char board[3][3]);
 void printBoard();
 void printScreen();
-void checkWins();
+void checkWins(char board[3][3]);
 void changeTurn();
 static char board[3][3] = {{' ',' ',' '},{' ',' ',' '},{' ',' ',' '}};
+//static char largeBoard[9][3][3] = {{{' ',' ',' '},{' ',' ',' '},{' ',' ',' '}},{{' ',' ',' '},{' ',' ',' '},{' ',' ',' '}},{{' ',' ',' '},{' ',' ',' '},{' ',' ',' '}},{{' ',' ',' '},{' ',' ',' '},{' ',' ',' '}},{{' ',' ',' '},{' ',' ',' '},{' ',' ',' '}},{{' ',' ',' '},{' ',' ',' '},{' ',' ',' '}},{{' ',' ',' '},{' ',' ',' '},{' ',' ',' '}},{{' ',' ',' '},{' ',' ',' '},{' ',' ',' '}},{{' ',' ',' '},{' ',' ',' '},{' ',' ',' '}}};
 char winner = ' ';
 char turn = 'X';
-string selection;
+int selection;
+char redo;
+
+//system("pause");    //reminder that I could use this later if I want to
 
 int main() {
-    
-    while(winner==' '){
-        cout << endl;
-        printScreen();
-        cout << endl;
-        cout << "type two digits to select a square. 1-3 column then 1-3 row (i.e. 21 for the top middle): ";
-        cin >> selection;
-        board[(int)selection[0]-49][(int)selection[1]-49] = turn;       //place X or O
-        //cout << "You have selected " << (int)selection[0]-49 << " and " << (int)selection[1]-49 << endl;  //for troubleshooting
+    cout << "type 2 for a standard game and 3 for 3d tic tac toe: ";
+    cin >> selection;
+    if (selection == 2){
+        while(winner==' '){
+            cout << endl;
+            printScreen();
+            cout << endl;
+            cout << "type a digit 1-9 to select a square (i.e. 2 for the top middle): ";
+            cin >> selection;
+            if(selection==0)
+                return 0;
+            board[((selection-1)%3)][((int)((selection-1)/3))] = turn;       //place X or O
+            cout << "You have selected " << (selection%3) << " and " << ((int)((selection-1)/3)) << endl;  //for troubleshooting
         changeTurn();
-        checkWins();
+        checkWins(board);
     }
-    system("pause");   
+    }else if (selection == 3){
+        //3d version
+    }else{
+        cout << "please select a valid game mode"<< endl;
+        main();
+    }
+
+    cout << "would you like to play again? (y/n)";
+    cin >> redo;
+    if (redo == 'y'){
+        main();
+    } 
     return 0;
 }
 
@@ -62,29 +81,29 @@ void changeTurn(){
         turn = 'X';
 }
 
-void checkWins(){
-    checkWinRow(0);
-    checkWinRow(1);
-    checkWinRow(2);
-    checkWinColumn(0);
-    checkWinColumn(1);
-    checkWinColumn(2);
-    checkWinDiagonals();
+void checkWins(char board[3][3]){
+    checkWinRow(0, board);
+    checkWinRow(1, board);
+    checkWinRow(2, board);
+    checkWinColumn(0, board);
+    checkWinColumn(1, board);
+    checkWinColumn(2, board);
+    checkWinDiagonals(board);
 }
 
-void checkWinRow(int checkRow){
+void checkWinRow(int checkRow, char board[3][3]){
     if (board[0][checkRow]==board[1][checkRow] && board[1][checkRow]==board[2][checkRow])
         winner = board[0][checkRow];
     return;
 }
 
-void checkWinColumn(int checkColumn){
+void checkWinColumn(int checkColumn, char board[3][3]){
     if (board[checkColumn][0]==board[checkColumn][1] && board[checkColumn][1]==board[checkColumn][2])
         winner = board[checkColumn][0];
     return;
 }
 
-void checkWinDiagonals(){
+void checkWinDiagonals(char board[3][3]){
     if ((board[0][0]==board[1][1] && board[1][1]==board[2][2]) || (board[2][0]==board[1][1] && board[1][1]==board[0][2]))
         winner = board[1][1];
     return;
