@@ -7,20 +7,23 @@ using std::endl;
 using std::string;
 
 //function signatures, a list of functions which exist that makes placeholders for later defining
-void checkWinRow(int checkRow, char board[3][3]);
-void checkWinColumn(int checkColumn, char board[3][3]);
-void checkWinDiagonals(char board[3][3]);
-void printBoard();
+char checkWinRow(int checkRow, char board[3][3]);
+char checkWinColumn(int checkColumn, char board[3][3]);
+char checkWinDiagonals(char board[3][3]);
+void printBoard(char board[3][3]);
 void printLargeBoard();
+void printRow(int selectedBoard, int selectedRow);
 void printScreen();
-void checkWins(char board[3][3]);
+char checkWins(char board[3][3]);
 void changeTurn();
 void reset();
 static char board[3][3] = {{' ',' ',' '},{' ',' ',' '},{' ',' ',' '}};
 static char largeBoard[9][3][3] = {{{' ',' ',' '},{' ',' ',' '},{' ',' ',' '}},{{' ',' ',' '},{' ',' ',' '},{' ',' ',' '}},{{' ',' ',' '},{' ',' ',' '},{' ',' ',' '}},{{' ',' ',' '},{' ',' ',' '},{' ',' ',' '}},{{' ',' ',' '},{' ',' ',' '},{' ',' ',' '}},{{' ',' ',' '},{' ',' ',' '},{' ',' ',' '}},{{' ',' ',' '},{' ',' ',' '},{' ',' ',' '}},{{' ',' ',' '},{' ',' ',' '},{' ',' ',' '}},{{' ',' ',' '},{' ',' ',' '},{' ',' ',' '}}};
 static char pointBoard[3][3] = {{' ',' ',' '},{' ',' ',' '},{' ',' ',' '}};
+int activeBoard;
 char winner = ' ';
 static char turn = 'X';
+int turnsPassed = 0;
 int gamemode;
 int selection = 0;
 char redo;
@@ -32,7 +35,7 @@ int main() {
 
     cout << "type 2 for a standard game, 3 for 3d tic tac toe, or 0 for help: ";
     cin >> gamemode;
-    if (gamemode == 0){
+    if (gamemode == 0){     //help section
         cout << endl << endl;
         cout << "This is the standard board, spots labelled with their input numbers:"<< endl;
         cout << endl;
@@ -50,7 +53,7 @@ int main() {
         main();
         return 0;
     }
-    else if (gamemode == 2){
+    else if (gamemode == 2){    //standard game
         while(winner==' '){
             cout << endl;
             printScreen();
@@ -64,17 +67,42 @@ int main() {
             board[((selection-1)%3)][((int)((selection-1)/3))] = turn;       //place X or O
             //cout << "You have selected " << (selection%3) << " and " << ((int)((selection-1)/3)) << endl;  //for troubleshooting
         changeTurn();
-        checkWins(board);
+        winner = checkWins(board);
     }
-    }else if (gamemode == 3){
+    }else if (gamemode == 3){       //3d game
         //3d version
-    }else{
+        cout << "select a board to begin in, using 1-9";
+        cin >> activeBoard -1;
+
+        while(turnsPassed<81){
+            cout << endl;
+            printScreen();
+            cout << endl;
+            cout << "type a digit 1-9 to select a square: ";
+            if (selection==0)
+                cout << " (i.e. 2 for the top middle)";
+            cin >> selection;
+            if(selection==0)
+                return 0;
+            largeBoard[activeBoard][((selection-1)%3)][((int)((selection-1)/3))] = turn;       //place X or O
+            activeBoard = selection-1;    //select new board
+        changeTurn();
+        winner = checkWins(board);
+    }
+
+
+        //after 81 turns, found using turnsPassed, evaluate points
+        int Xpoints = 0;
+        int Ypoints = 0;
+        //pointBoard[0-2][0-2] = checkWins(largeBoard[1-9])   //smaller games won, each 1 point
+        //checkWins(pointBoard);          //games in a row won, each 1 point
+    }else{      //selection error
         cout << "please select a valid game mode"<< endl;
         main();
         return 0;
     }
 
-    cout << "would you like to play again? (y/n)";
+    cout << "would you like to play again? (y/n)";      //restart option
     cin >> redo;
     if (redo == 'y'){
         turn = 'X';
@@ -83,10 +111,11 @@ int main() {
     return 0;
 }
 
-void reset(){
+void reset(){   //resets variables
     winner = ' ';
     turn = 'X';
-    for(int i=1;i<10;i++){
+    turnsPassed = 0;
+    for(int i=1;i<10;i++){      //reset boards
         board[((i-1)%3)][((int)((i-1)/3))] = ' ';
         pointBoard[((i-1)%3)][((int)((i-1)/3))] = ' ';
         for(int j=1;j<10;j++)
@@ -96,19 +125,22 @@ void reset(){
 }; 
 
 
-void printScreen(){
+void printScreen(){     //prints display each turn
     if (winner=='X'|| winner=='O')
         cout << "The winner is " << winner << endl;
     else
         cout << "It is " << turn << "'s turn" << endl;
     
     if(gamemode==2)
-        printBoard();
-    else
+        printBoard(board);
+    else{
         printLargeBoard();
+        cout << endl << "Active board: " << activeBoard+1 << endl << endl;
+        printBoard(largeBoard[activeBoard]);
+    }   
 }
 
-void printBoard(){
+void printBoard(char board[3][3]){      //prints the standard board
     cout << endl;
     cout << board[0][0] << " | " << board[1][0] << " | " << board[2][0] << endl;
     cout << board[0][1] << " | " << board[1][1] << " | " << board[2][1] << endl;
@@ -117,44 +149,60 @@ void printBoard(){
     return;
 }
 
-void printLargeBoard(){
-//code here
+void printLargeBoard(){     //prints the large board
+    for(int i=0;i<9;i++){
+        if (i%3==0&&i!=0){
+            cout << "           |           |           " << endl;
+            cout << "------------------------------------" << endl;
+            cout << "           |           |           " << endl;
+        }
+        cout << " "; printRow(i/3, i%3); cout << " | "; printRow(i/3+1, i%3); cout << " | "; printRow(i/3+2, i%3); cout << endl;
+    }
     return;
 }
 
-void changeTurn(){
+void printRow(int selectedBoard, int selectedRow){
+    cout << largeBoard[selectedBoard][0][selectedRow] << " | " << largeBoard[selectedBoard][1][selectedRow] << " | " << largeBoard[selectedBoard][2][selectedRow];
+    return;
+}
+
+
+void changeTurn(){      //changes... the turn... duh
     if(turn=='X')
         turn = 'O';
     else
         turn = 'X';
 }
 
-void checkWins(char board[3][3]){
-    checkWinRow(0, board);
-    checkWinRow(1, board);
-    checkWinRow(2, board);
-    checkWinColumn(0, board);
-    checkWinColumn(1, board);
-    checkWinColumn(2, board);
-    checkWinDiagonals(board);
+char checkWins(char board[3][3]){       //checks for a win condition
+    char results[7] = {checkWinRow(0, board),checkWinRow(1, board),checkWinRow(2, board),checkWinColumn(0, board),checkWinColumn(1, board),checkWinColumn(2, board),checkWinDiagonals(board)};
+    for(int i=0;i<8;i++)
+        if (results[i]!=' '){   //found a win
+            if (gamemode==2)
+                return results[i];
+            //pointBoard[((activeBoard-1)%3)][((int)((activeBoard-1)/3))];    //if 3d, mark the currentBoard as won
+            //there's two checks, one for small boards and one for the large board of smaller boards....!!!! 
+        }
+            
+    return ' ';
 }
 
-void checkWinRow(int checkRow, char board[3][3]){
+char checkWinRow(int checkRow, char board[3][3]){
     if (board[0][checkRow]==board[1][checkRow] && board[1][checkRow]==board[2][checkRow])
-        winner = board[0][checkRow];
-    return;
+        return board[0][checkRow];
+    return ' ';
 }
 
-void checkWinColumn(int checkColumn, char board[3][3]){
+char checkWinColumn(int checkColumn, char board[3][3]){
     if (board[checkColumn][0]==board[checkColumn][1] && board[checkColumn][1]==board[checkColumn][2])
-        winner = board[checkColumn][0];
-    return;
+        return board[checkColumn][0];
+    return ' ';
 }
 
-void checkWinDiagonals(char board[3][3]){
+char checkWinDiagonals(char board[3][3]){
     if ((board[0][0]==board[1][1] && board[1][1]==board[2][2]) || (board[2][0]==board[1][1] && board[1][1]==board[0][2]))
-        winner = board[1][1];
-    return;
+        return board[1][1];
+    return ' ';
 }
 
 
