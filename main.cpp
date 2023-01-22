@@ -97,14 +97,12 @@ int main() {
                     pointBoard[(activeBoard-1)%3][(activeBoard-1)/3] = result;
                     cout << result << "has earned one point!"
                     }
-
             activeBoard = selection-1;    //select new board   
             changeTurn();
             turnsPassed++;   
             }
         
         //game completion, evaluate points
-        
         
         //count game points
         for(int i=0;i<3;i++){
@@ -136,7 +134,7 @@ int main() {
             return 0;
         }
         
-    }else if (gamemode==1){     //test 3d point systme
+    }else if (gamemode==1){     //test 3d point system
             selection = -1;
             while(selection==-1){     //take a turn
                 cout << "random number: " << rand()%9+1;
@@ -154,7 +152,37 @@ int main() {
             changeTurn();
             turnsPassed++;   
             }
+        printScreen();
         cout<< "game completed" << endl;
+        //game completion, evaluate points
+        
+        //count game points
+        for(int i=0;i<3;i++){
+            for(int j=0;j<3;j++){
+                if (pointBoard[i][j]=='X')
+                    Xpoints++;
+                else
+                    Ypoints++;
+            }
+        }
+        //count 3-game points
+        char result = checkWins(pointBoard);
+        if (result=='X')
+                    Xpoints++;
+                else{
+                    Ypoints++;
+                }
+
+        //proclaim winner
+        if (Xpoints>Ypoints){
+            winner = 'X';
+        }else if (Ypoints>Xpoints){
+            winner = 'Y';
+        }else{
+            cout << "It's a tie!";
+            system("pause");
+            return 0;
+        }
 
 
 
