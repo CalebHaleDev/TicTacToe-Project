@@ -64,7 +64,7 @@ int main() {
                 cout << " (i.e. 2 for the top middle)";
             cin >> selection;
             if(selection==0)
-                return 0;
+                break;
             board[((selection-1)%3)][((int)((selection-1)/3))] = turn;       //place X or O
         changeTurn();
         winner = checkWins(board);
@@ -202,7 +202,7 @@ int main() {
     cout << "would you like to play again? (y/n)";      //restart option
     cin >> redo;
     if (redo == 'y'){
-        turn = 'X';
+        reset();
         main();
     } 
     return 0;
