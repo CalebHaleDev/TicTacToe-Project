@@ -66,7 +66,6 @@ int main() {
             if(selection==0)
                 return 0;
             board[((selection-1)%3)][((int)((selection-1)/3))] = turn;       //place X or O
-            //cout << "You have selected " << (selection%3) << " and " << ((int)((selection-1)/3)) << endl;  //for troubleshooting
         changeTurn();
         winner = checkWins(board);
     }
@@ -78,7 +77,7 @@ int main() {
         cin >> activeBoard;
         activeBoard--;  //user-friendly 1-9 to index range 0-8
 
-        while(turnsPassed<81){  //continue with game until completion
+        while(turnsPassed<81/*&& there is room*/){  //continue with game until completion
             cout << endl;
             printScreen();
             cout << endl;
@@ -95,11 +94,19 @@ int main() {
             char result = checkWins(largeBoard[activeBoard]);     //check for a local win
                 if(result!=' '&&pointBoard[(activeBoard-1)%3][(activeBoard-1)/3]==' '){      //if a new win is found, record it
                     pointBoard[(activeBoard-1)%3][(activeBoard-1)/3] = result;
-                    cout << result << "has earned one point!"
+                    cout << result << "has earned one point!";
                     }
             activeBoard = selection-1;    //select new board   
             changeTurn();
             turnsPassed++;   
+            /*                      //Add checker to see if all spots are filled and end the game earlier
+            int i = 0;
+            while(i<){
+                
+                if(largeBoard[activeBoard]=' ')
+                    break;
+            }
+            */
             }
         
         //game completion, evaluate points
@@ -134,11 +141,13 @@ int main() {
             return 0;
         }
         
-    }else if (gamemode==1){     //test 3d point system
+    }/*else if (gamemode==1){     //test 3d point system
+            while(turnsPassed<81){  //continue with game until completion
             selection = -1;
             while(selection==-1){     //take a turn
-                cout << "random number: " << rand()%9+1;
                 selection = rand()%9+1;
+                cout << "number: " << selection << endl;
+                cout << "turns passed: " << turnsPassed < endl;
                 if(largeBoard[activeBoard][((selection-1)%3)][((int)((selection-1)/3))]!=' '||selection>9)   //retry if invalid
                     selection = -1;     
             }
@@ -146,7 +155,7 @@ int main() {
             char result = checkWins(largeBoard[activeBoard]);     //check for a local win
                 if(result!=' '&&pointBoard[(activeBoard-1)%3][(activeBoard-1)/3]==' '){      //if a new win is found, record it
                     pointBoard[(activeBoard-1)%3][(activeBoard-1)/3] = result;
-                    cout << result << "has earned one point!"
+                    cout << result << "has earned one point!";
                     }
             activeBoard = selection-1;    //select new board   
             changeTurn();
@@ -156,7 +165,7 @@ int main() {
         cout<< "game completed" << endl;
         //game completion, evaluate points
         
-        //count game points
+        //count single-game points
         for(int i=0;i<3;i++){
             for(int j=0;j<3;j++){
                 if (pointBoard[i][j]=='X')
@@ -184,15 +193,12 @@ int main() {
             return 0;
         }
 
-
-
-
-
-    }else{      //selection error
+*/
+    //}else{      //selection error
         cout << "please select a valid game mode"<< endl;
         main();
         return 0;
-    }
+    //}
 
     cout << "would you like to play again? (y/n)";      //restart option
     cin >> redo;
