@@ -88,13 +88,16 @@ int main() {
                 cin >> selection;
                 if(selection==0)        //exit code
                     return 0;
-                if(largeBoard[activeBoard][((selection-1)%3)][((int)((selection-1)/3))]!=' ')   //retry if invalid
+                if(largeBoard[activeBoard][((selection-1)%3)][((int)((selection-1)/3))]!=' '||selection>9)   //retry if invalid
                     selection = -1;     
             }
             largeBoard[activeBoard][((selection-1)%3)][((int)((selection-1)/3))] = turn; //place X or O
             char result = checkWins(largeBoard[activeBoard]);     //check for a local win
-                if(result!=' '&&pointBoard[(activeBoard-1)%3][(activeBoard-1)/3]==' ')      //if a new win is found, record it
+                if(result!=' '&&pointBoard[(activeBoard-1)%3][(activeBoard-1)/3]==' '){      //if a new win is found, record it
                     pointBoard[(activeBoard-1)%3][(activeBoard-1)/3] = result;
+                    cout << result << "has earned one point!"
+                    }
+
             activeBoard = selection-1;    //select new board   
             changeTurn();
             turnsPassed++;   
@@ -133,6 +136,30 @@ int main() {
             return 0;
         }
         
+    }else if (gamemode==1){     //test 3d point systme
+            selection = -1;
+            while(selection==-1){     //take a turn
+                cout << "random number: " << rand()%9+1;
+                selection = rand()%9+1;
+                if(largeBoard[activeBoard][((selection-1)%3)][((int)((selection-1)/3))]!=' '||selection>9)   //retry if invalid
+                    selection = -1;     
+            }
+            largeBoard[activeBoard][((selection-1)%3)][((int)((selection-1)/3))] = turn; //place X or O
+            char result = checkWins(largeBoard[activeBoard]);     //check for a local win
+                if(result!=' '&&pointBoard[(activeBoard-1)%3][(activeBoard-1)/3]==' '){      //if a new win is found, record it
+                    pointBoard[(activeBoard-1)%3][(activeBoard-1)/3] = result;
+                    cout << result << "has earned one point!"
+                    }
+            activeBoard = selection-1;    //select new board   
+            changeTurn();
+            turnsPassed++;   
+            }
+        cout<< "game completed" << endl;
+
+
+
+
+
     }else{      //selection error
         cout << "please select a valid game mode"<< endl;
         main();
@@ -173,12 +200,13 @@ void printScreen(){     //prints display each turn
         printBoard(board);
     }else{
         printLargeBoard();
+        cout << endl;
         if (winner=='X'|| winner=='O')
             cout << "The winner is " << winner << endl;
         else
             cout << "It is " << turn << "'s turn" << endl;
 
-        cout << endl << endl << "Active board: " << activeBoard+1 << endl;
+        cout << endl << "Active board: " << activeBoard+1 << endl;
         printBoard(largeBoard[activeBoard]);
     }   
 }
