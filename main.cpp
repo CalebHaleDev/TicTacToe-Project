@@ -55,7 +55,7 @@ int main() {
         return 0;
     }
     else if (gamemode == 2){    //standard game
-        while(winner==' '){
+        while(winner==' '||(winner!='X'&&winner!='O')){
             cout << endl;
             printScreen();
             cout << endl;
@@ -68,7 +68,8 @@ int main() {
             board[((selection-1)%3)][((int)((selection-1)/3))] = turn;       //place X or O
         changeTurn();
         winner = checkWins(board);
-    }
+        }
+        cout << "The winner is "+winner+'!'<<endl;
     }else if (gamemode == 3){       //3d game
         //3d version
         printLargeBoard();
@@ -85,11 +86,13 @@ int main() {
             while(selection==-1){     //take a turn
                 cout << "type a digit 1-9 to select a valid square: ";
                 cin >> selection;
-                if(selection==0)        //exit code
-                    return 0;
+                if(selection==0)        //exit code, stop game
+                    break;
                 if(largeBoard[activeBoard][((selection-1)%3)][((int)((selection-1)/3))]!=' '||selection>9)   //retry if invalid
                     selection = -1;     
             }
+            if(selection==0)        //stop game early
+                break;
             largeBoard[activeBoard][((selection-1)%3)][((int)((selection-1)/3))] = turn; //place X or O
             char result = checkWins(largeBoard[activeBoard]);     //check for a local win
                 if(result!=' '&&pointBoard[(activeBoard-1)%3][(activeBoard-1)/3]==' '){      //if a new win is found, record it
@@ -99,16 +102,10 @@ int main() {
             activeBoard = selection-1;    //select new board   
             changeTurn();
             turnsPassed++;   
-            /*                      //Add checker to see if all spots are filled and end the game earlier
-            int i = 0;
-            while(i<){
-                
-                if(largeBoard[activeBoard]=' ')
-                    break;
+            //Check to see if all spots are filled and end the game earlier
+            //if(!(largeBoard[activeBoard][0]==' '||largeBoard[activeBoard][1]==' '||largeBoard[activeBoard][2]==' '||largeBoard[activeBoard][3]==' '||largeBoard[activeBoard][4]==' '||largeBoard[activeBoard][5]==' '||largeBoard[activeBoard][6]==' '||largeBoard[activeBoard][7]==' '||largeBoard[activeBoard][8]==' '))
+            //        break;
             }
-            */
-            }
-        
         //game completion, evaluate points
         
         //count game points
@@ -141,13 +138,13 @@ int main() {
             return 0;
         }
         
-    }/*else if (gamemode==1){     //test 3d point system
+    }else if (gamemode==1){     //test 3d point system
             while(turnsPassed<81){  //continue with game until completion
             selection = -1;
             while(selection==-1){     //take a turn
                 selection = rand()%9+1;
                 cout << "number: " << selection << endl;
-                cout << "turns passed: " << turnsPassed < endl;
+                cout << "turns passed: "+turnsPassed << endl;
                 if(largeBoard[activeBoard][((selection-1)%3)][((int)((selection-1)/3))]!=' '||selection>9)   //retry if invalid
                     selection = -1;     
             }
@@ -159,7 +156,10 @@ int main() {
                     }
             activeBoard = selection-1;    //select new board   
             changeTurn();
-            turnsPassed++;   
+            turnsPassed++;  
+            //Check to see if all spots are filled and end the game earlier
+            if(!(largeBoard[activeBoard][0][0]==' '||largeBoard[activeBoard][0][1]==' '||largeBoard[activeBoard][0][2]==' '||largeBoard[activeBoard][1][0]==' '||largeBoard[activeBoard][1][1]==' '||largeBoard[activeBoard][1][2]==' '||largeBoard[activeBoard][2][0]==' '||largeBoard[activeBoard][2][1]==' '||largeBoard[activeBoard][2][2]==' '))
+                break; 
             }
         printScreen();
         cout<< "game completed" << endl;
@@ -192,13 +192,12 @@ int main() {
             system("pause");
             return 0;
         }
-
-*/
-    //}else{      //selection error
+    }
+    else{      //selection error
         cout << "please select a valid game mode"<< endl;
         main();
         return 0;
-    //}
+    }
 
     cout << "would you like to play again? (y/n)";      //restart option
     cin >> redo;
@@ -224,7 +223,7 @@ void reset(){   //resets variables
     return;
 }; 
 
-void printScreen(){     //prints display each turn
+void printScreen(){     //prints the display each turn
     if(gamemode==2){
         if (winner=='X'|| winner=='O')
             cout << "The winner is " << winner << endl;
@@ -304,5 +303,3 @@ char checkWinDiagonals(char board[3][3]){
         return board[1][1];
     return ' ';
 }
-
-
